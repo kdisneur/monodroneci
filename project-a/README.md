@@ -1,3 +1,3 @@
 # Project A
 
-A small description
+a description
