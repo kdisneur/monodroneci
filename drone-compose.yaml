@@ -1,0 +1,31 @@
+version: "2.1"
+services:
+  server:
+    image: drone/drone:1
+    environment:
+      DRONE_GITHUB_CLIENT_ID: ${DRONE_GITHUB_CLIENT_ID}
+      DRONE_GITHUB_CLIENT_SECRET: ${DRONE_GITHUB_CLIENT_SECRET}
+      DRONE_RPC_SECRET: ${DRONE_RPC_SECRET}
+      DRONE_SERVER_HOST: ${NGROK_HOST}
+      DRONE_SERVER_PROTO: https
+      DRONE_YAML_ENDPOINT: http://drone-tree-config:3000
+      DRONE_YAML_SECRET: ${DRONE_YAML_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8080:80
+  agent:
+    image: drone/agent:1
+    environment:
+      DRONE_RPC_HOST: server
+      DRONE_RPC_PROTO: http
+      DRONE_RPC_SECRET: ${DRONE_RPC_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  drone-tree-config:
+    image: bitsbeats/drone-tree-config
+    environment:
+      PLUGIN_CONCAT: "true"
+      PLUGIN_FALLBACK: "true"
+      PLUGIN_SECRET: ${DRONE_YAML_SECRET}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
