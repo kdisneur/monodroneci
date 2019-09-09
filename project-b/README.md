@@ -1,3 +1,0 @@
-# Project B
-
-a description
